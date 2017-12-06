@@ -33,3 +33,19 @@ type Console with
         use stdin = Console.OpenStandardInput ()
         use reader = new StreamReader(stdin, Encoding.UTF8)
         reader.ReadToEnd ()  
+
+let parseList fn (str: string) =
+    str.Split([|'\t'; ' '|])
+    |> Array.choose (fun e ->
+        match e.Trim() with
+        | "" -> None
+        | e -> Some (fn e))
+
+let parseMatrix fn (str: string) =
+   str.Split([|'\r'; '\n'|])
+   |> Array.choose (fun row ->
+        match row.Trim() with
+        | "" -> None
+        | row -> Some row)
+   |> Array.map (parseList fn)
+   |> Array.filter (not << Array.isEmpty)
