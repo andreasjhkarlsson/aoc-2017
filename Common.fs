@@ -35,7 +35,7 @@ type Console with
         reader.ReadToEnd ()  
 
 let parseList fn (str: string) =
-    str.Split([|'\t'; ' '|])
+    str.Split([|'\t'; ' '; '\r'; '\n'|])
     |> Array.choose (fun e ->
         match e.Trim() with
         | "" -> None
