@@ -4,6 +4,7 @@ open System.Reflection
 open System
 open System.IO
 open System.Text
+open System.Text.RegularExpressions
 
 type Solution<'a,'b> =
     {
@@ -41,11 +42,21 @@ let parseList fn (str: string) =
         | "" -> None
         | e -> Some (fn e))
 
-let parseMatrix fn (str: string) =
-   str.Split([|'\r'; '\n'|])
+let parseLines (str: string) =
+    str.Split([|'\r'; '\n'|])
    |> Array.choose (fun row ->
         match row.Trim() with
         | "" -> None
         | row -> Some row)
+
+let parseMatrix fn str =
+   str
+   |> parseLines
    |> Array.map (parseList fn)
    |> Array.filter (not << Array.isEmpty)
+
+
+let (|Regex|_|) pattern input =
+        let m = Regex.Match(input, pattern)
+        if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ])
+        else None
