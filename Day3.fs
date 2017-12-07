@@ -19,7 +19,7 @@ let rec spiral target i n direction (lx, ly) =
                 | Down -> (lx, ly - (s+1)), n + s
             )
         let nextDirection = match direction with | Left -> Down | Right -> Up | Up -> Left | Down -> Right
-        let np, nn = newPoints |> List.last
+        let np, nn = newPoints |> List.rev |> List.head
         newPoints @ (spiral target (i+1) (nn+1) nextDirection np)
 
 let spiral2 target =
@@ -60,7 +60,7 @@ let spiral2 target =
                     np, sum
                 )
             let nextDirection = match direction with | Left -> Down | Right -> Up | Up -> Left | Down -> Right
-            let np, nn = newPoints |> List.last
+            let np, nn = newPoints |> List.rev |> List.head
             (_spiral2 (i+1) (nn+1) nextDirection np !newMap)
     _spiral2 0 0 Right (0,0) Map.empty
         

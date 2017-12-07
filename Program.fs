@@ -18,9 +18,9 @@ let main argv =
     let days = DayAttribute.All
 
     match days |> List.tryFind (fun (d,_) -> d.Day = day) with
-    | Some (day, method) ->
-        let solution = method.Invoke(null, [|input|])
-        printfn "*** Solution ***"
+    | Some (day, fn) ->
+        let solution = fn.Invoke(null, [|input|])
+        printfn "*** Solution for day %d ***" day.Day
         printfn "Part 1: %A" <| solution.GetType().GetProperty("Part1").GetValue(solution)
         printfn "Part 2: %A" <| solution.GetType().GetProperty("Part2").GetValue(solution)
     | None -> printfn "This day has not been solved"
