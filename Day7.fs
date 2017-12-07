@@ -51,7 +51,7 @@ let rec buildTower stubs rootName =
     }
 
 
-[<Day(7)>]
+[<Day(7, "Recursive Circus")>]
 let solve input=
 
     // Parse into tower stubs (flat structure)

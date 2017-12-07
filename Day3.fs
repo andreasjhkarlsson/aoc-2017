@@ -71,7 +71,7 @@ let solvePart1 target =
 
 let solvePart2 = spiral2
 
-[<Day(3)>]
+[<Day(3, "Spiral Memory")>]
 let solve (input: string) =
     let target = input.Trim() |> int
 

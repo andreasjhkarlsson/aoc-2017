@@ -13,5 +13,5 @@ let solvePart1 = sumAdjecents 1
 
 let solvePart2 input = sumAdjecents ((String.length input) / 2) input
 
-[<Day(1)>]
+[<Day(1, "Inverse Captcha")>]
 let solve input = { Part1 = solvePart1 input; Part2 = solvePart2 input} 

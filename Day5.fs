@@ -19,7 +19,7 @@ let solvePart1 jumps = follow jumps ((+) 1)
 let solvePart2 jumps = follow jumps (function n when n  >= 3 -> n - 1 | n -> n + 1)
 
 
-[<Day(5)>]
+[<Day(5, "A Maze of Twisty Trampolines, All Alike")>]
 let solve input =
     let jumps = parseList int input
 

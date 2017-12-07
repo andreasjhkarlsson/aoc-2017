@@ -24,7 +24,7 @@ let rec cycle banks previous =
         |> Map.add (clone banks) previous.Count // Store current bank configuration + current iteration count in map
         |> cycle banks
 
-[<Day(6)>]
+[<Day(6, "Memory Reallocation")>]
 let solve input = 
     
     let banks = parseList int input

@@ -20,7 +20,7 @@ let solvePart2 lines =
         if (Set.ofArray sorted).Count = sorted.Length then 1 else 0
     )
     
-[<Day(4)>]
+[<Day(4, "High-Entropy Passphrases")>]
 let solve (input: string) =
 
     let words = parseMatrix id input

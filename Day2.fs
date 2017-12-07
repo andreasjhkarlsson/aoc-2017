@@ -21,7 +21,7 @@ let solvePart2 matrix =
         |> Seq.head // According to puzzle there should only be one matching division pair
     )
     
-[<Day(2)>]
+[<Day(2, "Corruption Checksum")>]
 let solve input =
     let matrix = parseMatrix int input 
 

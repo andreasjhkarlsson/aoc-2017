@@ -12,10 +12,12 @@ type Solution<'a,'b> =
         Part2: 'b
     }
 
-type DayAttribute (day) =
+type DayAttribute (day, title) =
     inherit System.Attribute ()
 
     member x.Day: int = day
+
+    member x.Title: string = title
 
     with
         static member All =
