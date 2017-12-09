@@ -11,6 +11,7 @@ type Solution<'a,'b> =
         Part1: 'a
         Part2: 'b
     }
+    with static member Pair (p1,p2) = { Part1 = p1; Part2 = p2 }
 
 type DayAttribute (day, title) =
     inherit System.Attribute ()
