@@ -3,24 +3,23 @@
 open Common
 
 type Mode = Group | Garbage
-
-let rec parse mode score stream =
-
-    let inside = (=) mode
-
-    match stream with
-    | head::rest ->
-        match head with
-        | '{' when inside Group -> let subscore, gc = (parse Group (score + 1) rest) in score + subscore, gc
-        | '}' when inside Group -> parse Group (score - 1) rest
-        | '<' when inside Group -> parse Garbage score rest
-        | '>' when inside Garbage -> parse Group score rest
-        | '!' when rest <> [] -> parse mode score (List.tail rest)
-        | _ when inside Garbage -> let subscore, gc = parse mode score rest in subscore, gc + 1
-        | _ -> parse mode score rest
-    | [] -> 0, 0
-    
+type State = {Mode: Mode; Depth: int; Score: int; GC: int; Skip: bool}
 
 [<Day(9,"Stream Processing")>]
 let solve (input: string) =
-    Solution<int,int>.Pair <| parse Group 1 (input.Trim() |> Seq.toList)
+
+    input.Trim()
+    |> Seq.fold (fun ({Depth = depth; Score = score; GC = gc} as state) chr ->
+        let inside = (=) state.Mode
+
+        match chr with
+        | _ when state.Skip -> {state with Skip = false}
+        | '{' when inside Group -> {state with Depth = depth + 1; Score = score + depth}
+        | '}' when inside Group -> {state with Depth = depth - 1}
+        | '<' when inside Group -> {state with Mode = Garbage}
+        | '>' when inside Garbage -> {state with Mode = Group}
+        | '!'  -> {state with Skip = true}
+        | _ when inside Garbage -> {state with GC = gc + 1}
+        | _ -> state
+    ) {Mode = Group; Depth = 1; Score = 0; GC = 0; Skip = false}
+    |> fun {Score = score; GC = gc} -> {Part1 = score; Part2 = gc}
