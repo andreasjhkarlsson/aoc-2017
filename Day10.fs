@@ -34,21 +34,26 @@ let knotHash (input: string) =
     sparse
     |> Array.chunkBySize 16
     |> Array.map (Array.reduce (^^^))
-    |> Array.map (sprintf "%02x")
-    |> String.concat ""
+    |> Array.map byte
 
-let part1 (input: string) =
-    let hash = Array.init 256 id
-    let mutable skip = 0
-    let mutable position = 0
-    let lengths = input.Trim().Split([|','|]) |> Array.map int
-
-    do knotHashRound &position &skip lengths hash
-
-    hash.[0] * hash.[1]
-
-let part2 = knotHash
-
+    
 [<Day(10, "Knot Hash")>]
 let solve (input: string) =
-    { Part1 = part1 input; Part2 = part2 input}
+
+
+    let part1 =
+        let hash = Array.init 256 id
+        let mutable skip = 0
+        let mutable position = 0
+        let lengths = input.Trim().Split([|','|]) |> Array.map int
+
+        do knotHashRound &position &skip lengths hash
+
+        hash.[0] * hash.[1]
+
+    let part2=
+        knotHash input
+        |> Array.map (sprintf "%02x")
+        |> String.concat ""
+
+    { Part1 = part1; Part2 = part2}
