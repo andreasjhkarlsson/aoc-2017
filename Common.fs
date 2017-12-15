@@ -57,6 +57,8 @@ let parseMatrix fn str =
    |> parseLines
    |> Array.map (parseList fn)
    |> Array.filter (not << Array.isEmpty)
+   
+let split (separator: string) (str: string) = str.Split([|separator|], System.StringSplitOptions.None)
 
 
 let (|Regex|_|) pattern input =
