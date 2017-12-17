@@ -2,8 +2,6 @@
 
 open Common
 
-
-
 [<Day(15, "Dueling Generators")>]
 let solve (input: string) =
 
