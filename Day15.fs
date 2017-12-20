@@ -31,8 +31,7 @@ let solve (input: string) =
         ||> judge 40000000
 
     let part2 =
-        ((generatorA |> Seq.filter (fun n -> n%4UL = 0UL)),
-        (generatorB |> Seq.filter (fun n -> n%8UL = 0UL)))
+        ((generatorA |> Seq.filter (fun n -> n%4UL = 0UL)), (generatorB |> Seq.filter (fun n -> n%8UL = 0UL)))
         ||> judge 5000000
 
     { Part1 = part1; Part2 = part2 }
