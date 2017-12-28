@@ -38,8 +38,24 @@ type Instruction =
     | Add of Register * Operand
     | Mul of Register * Operand
     | Mod of Register * Operand
+    | Sub of Register * Operand
     | Rcv of Register
     | Jgz of Operand * Operand
+    | Jnz of Operand * Operand
+    with
+        static member OfString =
+            let operand op = try Value (int64 op) with | _ -> Register op 
+            function
+            | Regex @"snd (\S+)"        [op]        ->  Snd (operand op)
+            | Regex @"set (\S+) (\S+)"  [reg; op]   ->  Set(reg, operand op)
+            | Regex @"add (\S+) (\S+)"  [reg; op]   ->  Add(reg, operand op)
+            | Regex @"sub (\S+) (\S+)"  [reg; op]   ->  Sub(reg, operand op)
+            | Regex @"mul (\S+) (\S+)"  [reg; op]   ->  Mul(reg, operand op)
+            | Regex @"mod (\S+) (\S+)"  [reg; op]   ->  Mod(reg, operand op)
+            | Regex @"rcv (\S+)"        [reg]       ->  Rcv reg
+            | Regex @"jgz (\S+) (\S+)"  [op1; op2]  ->  Jgz (operand op1, operand op2)
+            | Regex @"jnz (\S+) (\S+)"  [op1; op2]  ->  Jnz (operand op1, operand op2)
+            | _ -> failwith "Invalid input"
 
 type State = {
         Registers: Map<Register, Value>
@@ -68,22 +84,9 @@ type State = {
 let solve input =
 
     let instructions =
-
-        let operand op = try Value (int64 op) with | _ -> Register op 
-
         input
         |> parseLines
-        |> Array.map (
-            function
-            | Regex @"snd (\S+)"        [op]        ->  Snd (operand op)
-            | Regex @"set (\S+) (\S+)"  [reg; op]   ->  Set(reg, operand op)
-            | Regex @"add (\S+) (\S+)"  [reg; op]   ->  Add(reg, operand op)
-            | Regex @"mul (\S+) (\S+)"  [reg; op]   ->  Mul(reg, operand op)
-            | Regex @"mod (\S+) (\S+)"  [reg; op]   ->  Mod(reg, operand op)
-            | Regex @"rcv (\S+)"        [reg]       ->  Rcv reg
-            | Regex @"jgz (\S+) (\S+)"  [op1; op2]  ->  Jgz (operand op1, operand op2)
-            | _ -> failwith "Invalid input"
-        )
+        |> Array.map Instruction.OfString
 
     let part1 = 
         Seq.initInfinite id
@@ -100,6 +103,7 @@ let solve input =
                 | Mod (reg, op)     ->  {state.Advance 1L with Registers = reg <!- (!reg % %op)}
                 | Rcv op            ->  {state.Advance 1L with Recovered = if !op <> 0L then state.LastSound else state.Recovered}
                 | Jgz (op1, op2)    ->  {state with PC = if %op1 > 0L then state.PC + (%op2) else state.PC + 1L}
+                | _                 ->  failwith "Unsupported in this puzzle"
         ) (State.Create 0L)
         |> Seq.find (fun s -> s.Recovered <> 0L)
         |> (fun s ->s.Recovered)
@@ -126,7 +130,8 @@ let solve input =
                         try
                             {state.Advance 1L with  Registers = reg <!- pipe.Receive ()}
                         with | :? System.TimeoutException -> { state with Terminated = true } // Deadlock
-                    | Jgz (op1, op2)    ->  {state with PC = if %op1 > 0L then state.PC + (%op2) else state.PC + 1L}           
+                    | Jgz (op1, op2)    ->  {state with PC = if %op1 > 0L then state.PC + (%op2) else state.PC + 1L}   
+                    | _                 ->  failwith "Not supported in this puzzle"
                              
             if newState.Terminated then newState
             else run newState pipe
